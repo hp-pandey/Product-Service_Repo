@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -46,17 +47,18 @@ func GetProducts() ([]Product, error) {
 
 func GetProductById(productId primitive.ObjectID) (*Product, error) {
 	var product Product
-	err := productCollection.FindOne(context.TODO(), bson.M{"_id": productId}).Decode(product)
+	err := productCollection.FindOne(context.TODO(), bson.M{"_id": productId}, nil).Decode(&product)
 	if err != nil {
+		fmt.Println(err.Error())
 		return nil, err
 	}
-
 	return &product, nil
 }
 
 func UpdateProduct(product *Product) error {
-	_, err := productCollection.UpdateOne(context.TODO(), bson.M{"_id": product.ID}, product)
+	_, err := productCollection.UpdateOne(context.TODO(), bson.M{"_id": product.ID}, bson.M{"$set": product})
 	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
 

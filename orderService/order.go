@@ -10,8 +10,8 @@ import (
 )
 
 type Order struct {
-	ID           string             `json:"_id" bson:"_id"`
-	ProductId    primitive.ObjectID `json:"productId" bson:"productId"`
+	ID           primitive.ObjectID `json:"_id" bson:"_id"`
+	ProductId    string             `json:"productId" bson:"productId"`
 	Quantity     int                `json:"quantity" bson:"quantity"`
 	IsPremium    bool               `json:"isPremium" bson:"isPremium"`
 	OrderValue   float64            `json:"orderValue" bson:"orderValue"`
@@ -30,7 +30,7 @@ func CreateOrder(order *Order) error {
 	return err
 }
 
-func UpdateOrderStatus(orderID, status string) error {
+func UpdateOrderStatus(orderID primitive.ObjectID, status string) error {
 	_, err := orderCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": orderID},

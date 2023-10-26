@@ -5,6 +5,7 @@ import (
 	"github.com/hp-pandey/Product-Service/mongo"
 	order "github.com/hp-pandey/Product-Service/orderService"
 	product "github.com/hp-pandey/Product-Service/productservice"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -31,7 +32,13 @@ func main() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 			return
 		}
-		product1, err := product.GetProductById(newOrder.ProductId)
+		if newOrder.Quantity > 10 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Maixmum limitation reached"})
+			return
+		}
+		newOrder.ID = primitive.NewObjectID()
+		pId, err := primitive.ObjectIDFromHex(newOrder.ProductId)
+		product1, err := product.GetProductById(pId)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Product Not available"})
 			return
@@ -63,16 +70,12 @@ func main() {
 	})
 
 	r.PUT("/order/:id", func(c *gin.Context) {
-		orderID := c.Param("id")
-		var updateStatus struct {
-			Status string `json:"status"`
-		}
-		if err := c.BindJSON(&updateStatus); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		orderID, err := primitive.ObjectIDFromHex(c.Param("id"))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid OrderId"})
 			return
 		}
-
-		err := order.UpdateOrderStatus(orderID, updateStatus.Status)
+		err = order.UpdateOrderStatus(orderID, c.Query("status"))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order status"})
 			return
