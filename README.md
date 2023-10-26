@@ -12,7 +12,7 @@ value, dispatch date, and order status. Allows users to place new orders and upd
 
 ### 1.Clone the Repository:
 
-git clone <YOUR_REPO_URL>
+git clone https://github.com/hp-pandey/Product-Service_Repo.git
 
 ### 2.Database Setup:
 
