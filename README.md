@@ -1,7 +1,7 @@
 # Product Ordering System
 
 This repository contains two Go (Golang) services - ProductService and OrderService - designed to provide information
-about products and manage orders. These services are built using Go and utilize MySQL/PostgreSQL as the database
+about products and manage orders. These services are built using Go and utilize MongoDB as the database
 backend.
 
 Services Overview ProductService Provides information about products, including availability, price, and category.
